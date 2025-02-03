@@ -15,45 +15,44 @@ CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
 USE `mydb` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`product`
+-- Table `mydb`.`customers`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`product` (
-  `product_id` INT NOT NULL AUTO_INCREMENT,
-  `product_name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`product_id`))
+CREATE TABLE IF NOT EXISTS `mydb`.`customers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`order`
+-- Table `mydb`.`orders`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`order` (
-  `order_id` INT NOT NULL AUTO_INCREMENT,
-  `product_name` VARCHAR(45) NOT NULL,
-  `quantity` INT NOT NULL,
-  `clients_address` VARCHAR(100) NOT NULL,
-  `order_date` DATE NOT NULL,
-  `client-surname` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`order_id`),
-  CONSTRAINT `fk_order_product`
-    FOREIGN KEY ()
-    REFERENCES `mydb`.`product` ()
+CREATE TABLE IF NOT EXISTS `mydb`.`orders` (
+  `id` INT NOT NULL,
+  `customer_id` INT NOT NULL,
+  `date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_customers_orders_idx` (`customer_id` ASC) VISIBLE,
+  CONSTRAINT `fk_customers_orders`
+    FOREIGN KEY (`customer_id`)
+    REFERENCES `mydb`.`customers` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`clients`
+-- Table `mydb`.`order_products`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`clients` (
-  `clients_id` INT NOT NULL,
-  `client_surname` VARCHAR(45) NOT NULL,
-  `clients_address` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`clients_id`),
-  CONSTRAINT `fk_order_clients`
-    FOREIGN KEY (`clients_id`)
-    REFERENCES `mydb`.`order` (`order_id`)
+CREATE TABLE IF NOT EXISTS `mydb`.`order_products` (
+  `order_id` INT NOT NULL,
+  `title` VARCHAR(45) NOT NULL,
+  `quantity` INT NOT NULL,
+  PRIMARY KEY (`order_id`),
+  CONSTRAINT `fk_order_order_products`
+    FOREIGN KEY (`order_id`)
+    REFERENCES `mydb`.`orders` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
